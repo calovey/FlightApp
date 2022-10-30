@@ -3,9 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import "./App.css"
-//import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css";
-//import * as serviceWorker from "../service-worker";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,21 +12,12 @@ root.render(
   </React.StrictMode>
 );
 
-// if ("serviceWorker" in navigator) {
-//   navigator.serviceWorker.register("service-worker.js").then(registration => {
-//     console.log("it worked", registration)
-//   }).catch(error => { console.log("fail",error) });
-// }
-
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('../service-worker.js').then(function(reg) {
-      console.log('Successfully registered service worker', reg);
-  }).catch(function(err) {
-      console.warn('Error whilst registering service worker', err);
+  window.addEventListener("load", () => {
+  navigator.serviceWorker.register('/service-worker.js')
+  .then(reg => console.log("Service worker registered"))
+  .catch(err => console.error(`Service Worker Error: ${err}`));
   });
-  }
-
-
-//serviceWorker.register();
-
-//reportWebVitals();
+} else {
+  console.log("Service Worker is not supported by browser.");
+}
