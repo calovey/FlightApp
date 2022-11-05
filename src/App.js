@@ -1,8 +1,4 @@
 import * as React from "react";
-// import TextField from "@mui/material/TextField";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import FormGroup from "@mui/material/FormGroup";
@@ -49,7 +45,6 @@ export default function BasicDatePicker() {
             <div className="form-group mt-3">
               <FormGroup>
                 <FormControlLabel
-                  //control={<Switch defaultChecked />}
                   control={<Switch />}
                   label="Is it international flight?"
                   required
@@ -57,7 +52,7 @@ export default function BasicDatePicker() {
               </FormGroup>{" "}
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button type="submit" className="btn btn-dark" onClick={() => {alert("Informations saved.")}}>
+              <button type="submit" className="btn btn-dark">
                 Submit
               </button>
             </div>
