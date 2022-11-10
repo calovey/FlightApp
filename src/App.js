@@ -1,8 +1,4 @@
 import * as React from "react";
-import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import FormGroup from "@mui/material/FormGroup";
@@ -25,27 +21,16 @@ export default function BasicDatePicker() {
                 type="text"
                 className="form-control mt-1"
                 placeholder="Enter flight code"
+                required
               />
             </div>
-            {/* <div className="form-group mt-3">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                className="form-control mt-1"
-                value={value}
-                onChange={(newValue) => {
-                  setValue(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </div> */}
             <div className="form-group mt-3">
               <label>Flight Date</label>
               <input
                 type="date"
                 className="form-control mt-1"
                 placeholder="Enter flight date"
+                required
               />
             </div>
             <div className="form-group mt-3">
@@ -54,14 +39,15 @@ export default function BasicDatePicker() {
                 type="time"
                 className="form-control mt-1"
                 placeholder="Enter flight time"
+                required
               />
             </div>
             <div className="form-group mt-3">
               <FormGroup>
                 <FormControlLabel
-                  //control={<Switch defaultChecked />}
                   control={<Switch />}
                   label="Is it international flight?"
+                  required
                 />
               </FormGroup>{" "}
             </div>
