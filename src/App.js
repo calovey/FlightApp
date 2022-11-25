@@ -19,6 +19,26 @@ export default function BasicDatePicker() {
     if (flightCode && flightDate && flightTime) {
       request.onsuccess = () => {
         const db = request.result;
+        const transaction = db.transaction("flights", "readwrite");
+        const store = transaction.objectStore("flights");
+        const nextFlightIndex = store.index("nextFlight");
+        store.put({ flightCode: "", flightDate: Date.now() });
+
+        const query = store.get(1);
+
+        query.onsuccess = function () {
+          console.log("next flight", query.result);
+        };
+
+        transaction.oncomplete = function () {
+          db.close();
+        };
+        alert("Succesfully saved");
+      };
+
+      request.onerror = function (event) {
+        console.error("An error occurred with IndexedDB");
+        console.error(event);
       };
     }
   };
