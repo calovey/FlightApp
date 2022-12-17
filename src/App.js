@@ -4,24 +4,23 @@ import "./App.css";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import "./flightDb.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function BasicDatePicker() {
-  const [value, setValue] = React.useState(null);
   const [flightCode, setFlightCode] = useState("");
   const [flightDate, setFlightDate] = useState("");
   const [flightTime, setFlightTime] = useState("");
 
   const handleSubmit = (event) => {
-    const request = indexedDB.open("FlightApp", 1);
+    event.preventDefault();
 
-    if (flightCode && flightDate) {
-      request.onsuccess = () => {
+    const request = indexedDB.open("FlightApp", 2);
+
+    request.onsuccess = () => {
+      if (flightCode && flightDate) {
         const db = request.result;
-        const transaction = db.transaction("flights", "readwrite");
+        const transaction = db.transaction(["flights"], "readwrite");
         const store = transaction.objectStore("flights");
-        const nextFlightIndex = store.index("nextFlight");
         store.put({ flightCode: "", flightDate: Date.now() });
 
         const query = store.get(1);
@@ -33,7 +32,6 @@ export default function BasicDatePicker() {
         transaction.oncomplete = function () {
           db.close();
         };
-        alert("Succesfully saved");
       };
 
       request.onerror = function (event) {
@@ -97,10 +95,8 @@ export default function BasicDatePicker() {
             </div>
             <div className="d-grid gap-2 mt-3">
               <button
-                type="submit"
                 className="btn btn-dark"
-                onClick={handleSubmit}
-              >
+                onClick={handleSubmit}>
                 Submit
               </button>
             </div>
