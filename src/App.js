@@ -21,7 +21,7 @@ export default function BasicDatePicker() {
         const db = request.result;
         const transaction = db.transaction(["flights"], "readwrite");
         const store = transaction.objectStore("flights");
-        store.put({ flightCode: "", flightDate: Date.now() });
+        store.put({ flightCode, flightDate: Date.now() });
 
         const query = store.get(1);
 
