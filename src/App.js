@@ -14,7 +14,7 @@ export default function BasicDatePicker() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const request = indexedDB.open("FlightApp", 2);
+    const request = indexedDB.open("FlightApp", 1);
 
     request.onsuccess = () => {
       if (flightCode && flightDate) {
