@@ -21,3 +21,4 @@ if ("serviceWorker" in navigator) {
 }
 
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+Notification.requestPermission();
