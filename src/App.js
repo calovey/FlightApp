@@ -15,30 +15,36 @@ export default function BasicDatePicker() {
     event.preventDefault();
 
     const request = indexedDB.open("FlightApp", 1);
+    request.onupgradeneeded = function () {
+      const db = request.result;
+      db.createObjectStore("flights", { keyPath: "id" });
+    };
 
     request.onsuccess = () => {
-      if (flightCode && flightDate) {
+      if (request.result) {
         const db = request.result;
-        const transaction = db.transaction(["flights"], "readwrite");
-        const store = transaction.objectStore("flights");
-        store.put({ flightCode, flightDate: Date.now() });
+        if (flightCode && flightDate) {
+          const transaction = db.transaction(["flights", "readwrite"]);
+          const store = transaction.objectStore("flights");
+          store.put({ flightCode, flightDate: Date.now() });
 
-        const query = store.get(1);
+          const query = store.get(1);
 
-        query.onsuccess = function () {
-          console.log("next flight", query.result);
-        };
+          query.onsuccess = function () {
+            console.log("next flight", query.result);
+          };
 
-        transaction.oncomplete = function () {
-          db.close();
-        };
-      };
-
-      request.onerror = function (event) {
-        console.error("An error occurred with IndexedDB");
-        console.error(event);
-      };
+          transaction.oncomplete = function () {
+            db.close();
+          };
+        }
+      }
     }
+
+    request.onerror = function (event) {
+      console.error("An error occurred with IndexedDB");
+      console.error(event);
+    };
   };
 
   return (
