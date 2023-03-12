@@ -1,51 +1,40 @@
 import * as React from "react";
+//import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import setupIndexedDB, { useIndexedDBStore } from "use-indexeddb";
 
-export default function BasicDatePicker() {
+const idbConfig = {
+  databaseName: "FlightApp",
+  version: 2,
+  stores: [
+    {
+      name: "flights",
+      id: { keyPath: "id", autoIncrement: true }
+    },
+  ],
+};
+
+function FormHandle() {
   const [flightCode, setFlightCode] = useState("");
   const [flightDate, setFlightDate] = useState("");
   const [flightTime, setFlightTime] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  useEffect(() => {
+    setupIndexedDB(idbConfig)
+      .then(() => console.log("success"))
+      .catch(e => console.error("An error occurred with IndexedDB", e));
+  }, []);
 
-    const request = indexedDB.open("FlightApp", 1);
-    request.onupgradeneeded = function () {
-      const db = request.result;
-      db.createObjectStore("flights", { keyPath: "id" });
-    };
+  const { add } = useIndexedDBStore("flights");
 
-    request.onsuccess = () => {
-      if (request.result) {
-        const db = request.result;
-        if (flightCode && flightDate) {
-          const transaction = db.transaction(["flights", "readwrite"]);
-          const store = transaction.objectStore("flights");
-          store.put({ flightCode, flightDate: Date.now() });
-
-          const query = store.get(1);
-
-          query.onsuccess = function () {
-            console.log("next flight", query.result);
-          };
-
-          transaction.oncomplete = function () {
-            db.close();
-          };
-        }
-      }
-    }
-
-    request.onerror = function (event) {
-      console.error("An error occurred with IndexedDB");
-      console.error(event);
-    };
-  };
+  function insert({ flightCode, flightDate,flightTime }) {
+    add({ flightCode, flightDate, flightTime }).then(console.log);
+  }
 
   return (
     <div className="App">
@@ -100,9 +89,7 @@ export default function BasicDatePicker() {
               </FormGroup>{" "}
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button
-                className="btn btn-dark"
-                onClick={handleSubmit}>
+              <button className="btn btn-dark" onClick={() => insert({ flightCode, flightDate,flightTime })}>
                 Submit
               </button>
             </div>
@@ -112,3 +99,4 @@ export default function BasicDatePicker() {
     </div>
   );
 }
+export default FormHandle;
