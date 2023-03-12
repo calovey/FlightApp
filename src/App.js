@@ -1,12 +1,40 @@
 import * as React from "react";
+//import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { useState, useEffect } from "react";
+import setupIndexedDB, { useIndexedDBStore } from "use-indexeddb";
 
-export default function BasicDatePicker() {
-  const [value, setValue] = React.useState(null);
+const idbConfig = {
+  databaseName: "FlightApp",
+  version: 2,
+  stores: [
+    {
+      name: "flights",
+      id: { keyPath: "id", autoIncrement: true }
+    },
+  ],
+};
+
+function FormHandle() {
+  const [flightCode, setFlightCode] = useState("");
+  const [flightDate, setFlightDate] = useState("");
+  const [flightTime, setFlightTime] = useState("");
+
+  useEffect(() => {
+    setupIndexedDB(idbConfig)
+      .then(() => console.log("success"))
+      .catch(e => console.error("An error occurred with IndexedDB", e));
+  }, []);
+
+  const { add } = useIndexedDBStore("flights");
+
+  function insert({ flightCode, flightDate,flightTime }) {
+    add({ flightCode, flightDate, flightTime }).then(console.log);
+  }
 
   return (
     <div className="App">
@@ -19,8 +47,11 @@ export default function BasicDatePicker() {
               <label>Flight Code</label>
               <input
                 type="text"
+                name="flightCode"
                 className="form-control mt-1"
                 placeholder="Enter flight code"
+                onChange={(e) => setFlightCode(e.target.value)}
+                value={flightCode}
                 required
               />
             </div>
@@ -28,8 +59,11 @@ export default function BasicDatePicker() {
               <label>Flight Date</label>
               <input
                 type="date"
+                name="flightDate"
                 className="form-control mt-1"
                 placeholder="Enter flight date"
+                onChange={(e) => setFlightDate(e.target.value)}
+                value={flightDate}
                 required
               />
             </div>
@@ -37,8 +71,11 @@ export default function BasicDatePicker() {
               <label>Flight Time</label>
               <input
                 type="time"
+                name="flightTime"
                 className="form-control mt-1"
                 placeholder="Enter flight time"
+                onChange={(e) => setFlightTime(e.target.value)}
+                value={flightTime}
                 required
               />
             </div>
@@ -52,7 +89,7 @@ export default function BasicDatePicker() {
               </FormGroup>{" "}
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button type="submit" className="btn btn-dark">
+              <button className="btn btn-dark" onClick={() => insert({ flightCode, flightDate,flightTime })}>
                 Submit
               </button>
             </div>
@@ -62,3 +99,4 @@ export default function BasicDatePicker() {
     </div>
   );
 }
+export default FormHandle;
